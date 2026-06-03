@@ -9,6 +9,8 @@
 
 set -euo pipefail
 
+source "${PLEIADES_TERMUX_LIB:-}" 2>/dev/null || true
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONTAINER_ROOT="${PLEIADES_CONTAINER_ROOT:-${SCRIPT_DIR}/root.x86_64}"
 # PLEIADES_REPO: set this to your fork URL, or rely on gh CLI detection below
@@ -29,13 +31,14 @@ log()  { echo "[pleiades-bootstrap] $*"; }
 run()  { $DRY_RUN && echo "[DRY-RUN] $*" || "$@"; }
 die()  { echo "ERROR: $*" >&2; exit 1; }
 
-[[ "${EUID:-$(id -u)}" -ne 0 ]] && die "Run as root"
-# Termux: systemd-nspawn not available
+# Termux guard: check before root/sudo requirements
 if [[ "${PLEIADES_ENV:-}" == "termux" ]]; then
     log "Termux environment detected — skipping systemd-nspawn bootstrap"
     log "See pleiades/env/bootstrap-termux.sh for Termux setup"
     exit 0
 fi
+
+[[ "${EUID:-$(id -u)}" -ne 0 ]] && die "Run as root"
 command -v systemd-nspawn &>/dev/null || die "systemd-nspawn required (install systemd-container)"
 
 # ── Environment detection ────────────────────────────────────────────────────
