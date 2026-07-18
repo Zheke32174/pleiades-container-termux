@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-deprecation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Shell syntax
+        run: |
+          bash -n bootstrap-container.sh
+          bash -n install-scripts/gentoo-up.sh
+          bash -n install-scripts/gentoo-down.sh
+          bash -n install-scripts/gentoo-shell.sh
+      - name: Commands fail closed
+        run: |
+          set -euo pipefail
+          for script in bootstrap-container.sh install-scripts/gentoo-up.sh install-scripts/gentoo-down.sh install-scripts/gentoo-shell.sh; do
+            set +e
+            bash "$script" >/tmp/out 2>/tmp/err
+            rc=$?
+            set -e
+            test "$rc" -eq 64
+            test -s /tmp/err
+          done
+      - name: No success stubs remain
+        run: |
+          set -euo pipefail
+          ! grep -RInE 'skipping.*exit 0|systemd-nspawn.*skipping' bootstrap-container.sh install-scripts
+          grep -Fq 'archive candidate' README.md
