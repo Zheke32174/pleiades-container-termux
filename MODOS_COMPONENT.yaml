@@ -1,0 +1,39 @@
+apiVersion: modos.pleiades/v1alpha1
+kind: Component
+metadata:
+  name: pleiades-termux-container-adapter
+  repository: Zheke32174/pleiades-container-termux
+  visibility: public
+  lifecycle: experimental
+  defaultBranch: main
+spec:
+  roles:
+    - android-container-adapter
+    - rootless-workload-substrate
+    - intermittent-edge-runtime
+  authority: local-enforcement
+  inputs:
+    - signed-workload-specs
+    - container-images
+    - cached-local-policy
+  outputs:
+    - workload-status
+    - buffered-domain-events
+    - runtime-observations
+  capabilitiesProvided:
+    - workload.container.termux
+    - node.android.container
+    - event.buffer.mobile
+  capabilitiesRequired:
+    - host.android.local
+    - filesystem.container.scoped
+    - policy.local.read
+    - audit.append
+  dataClasses:
+    - public
+    - private
+    - untrusted
+    - evidence
+  failurePolicy: degrade-local
+  promotionPolicy: signed-pr
+  notes: The adapter provides bounded container execution on Android and cannot claim fresh global authority during partition.
