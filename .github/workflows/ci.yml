@@ -22,12 +22,17 @@ jobs:
         with:
           fetch-depth: 0
           show-progress: false
+
+      - name: Compile sensitivity scanner
+        run: python3 -m py_compile ci/scan_public_repo.py
+
       - name: Shell syntax
         run: |
           bash -n bootstrap-container.sh
           bash -n install-scripts/gentoo-up.sh
           bash -n install-scripts/gentoo-down.sh
           bash -n install-scripts/gentoo-shell.sh
+
       - name: Commands fail closed
         run: |
           set -euo pipefail
@@ -39,8 +44,19 @@ jobs:
             test "$rc" -eq 64
             test -s /tmp/err
           done
-      - name: No success stubs remain
+
+      - name: Archive and ontology invariants
         run: |
           set -euo pipefail
           ! grep -RInE 'skipping.*exit 0|systemd-nspawn.*skipping' bootstrap-container.sh install-scripts
           grep -Fq 'archive candidate' README.md
+          grep -Fq 'authority: none' MODOS_COMPONENT.yaml
+          grep -Fq 'lifecycle: retired' MODOS_COMPONENT.yaml
+          grep -Fq 'promotionPolicy: never-promote' MODOS_COMPONENT.yaml
+          test -f LICENSE
+          test -f SECURITY.md
+          test -f ARCHIVE_NOTICE.md
+          test ! -e .github/workflows/release.yml
+
+      - name: Scan public tree and reachable Git history
+        run: python3 ci/scan_public_repo.py
