@@ -6,8 +6,8 @@
 - Public role: retired compatibility stub and historical lineage only
 - Draft branch: `hardening/archive-readiness-v1`
 - Draft pull request: #3
-- Last implementation head: `d02693b54b53cb0aef7a157f3b960a7429ccfc38`
-- Last completed validation: archive-integrity run `29670079787` — success
+- Current validated implementation head: `86970e7a5ace600a58b3e6009ef992f47855d74b`
+- Last completed validation: archive-integrity run `29902357217` — success
 - Reconsideration trigger: `main` advanced to `c5418512b1f621367c51cc22bc0ea7e698aa6561` with a new tag-release workflow after the retirement branch had removed all release authority
 
 ## Completed scope
@@ -19,9 +19,9 @@
 - Added an archive notice, MIT license, and retired-project security policy.
 - Removed GHCR and GitHub Release automation from the archive candidate.
 - Added current-tree and reachable-history sensitivity scanning.
-- Proved the retirement boundary at implementation head `d02693b...` in run `29670079787`.
 - Reconciled later `main` commit `c541851...` without retaining its release workflow; a retired repository must not acquire new publication authority.
 - Pinned the remaining checkout Action to reviewed full SHA `11bd71901bbe5b1630ceea73d27597364c9af683`, disabled persisted credentials, and fixed the validation runner to `ubuntu-24.04`.
+- Restored a conflict-free draft lineage while preserving the retired tree and zero publication authority.
 
 ## Resolved findings
 
@@ -33,21 +33,27 @@
 6. **False-success compatibility behavior:** every executable compatibility command fails closed with exit status 64.
 7. **Workflow supply-chain weakness:** the remaining third-party Action is full-SHA pinned and checkout credentials are not persisted.
 8. **Branch divergence:** the post-retirement `main` release-workflow commit is incorporated as ancestry while deliberately excluded from the resulting tree.
+9. **Missing persistent checkpoint:** this ledger now records exact reviewed heads, receipts, blockers, deferred work, and reconsideration triggers.
 
 ## Validation receipts
 
 - `29670079787`: archive-integrity run passed at `d02693b54b53cb0aef7a157f3b960a7429ccfc38`.
-- Coverage included shell parsing, status-64 refusal behavior, retired/no-authority/never-promote invariants, required public documents, absence of release automation, and current-tree plus reachable-history sensitivity scanning.
-- A fresh exact-head receipt is required after the reconciliation and workflow-hardening commit.
+- `29902357217`: archive-integrity run passed at exact reconciled head `86970e7a5ace600a58b3e6009ef992f47855d74b`.
+- Exact-head coverage includes shell parsing, status-64 refusal behavior, retired/no-authority/never-promote invariants, required public documents, persistent checkpoint presence, absence of release automation, pinned read-only checkout, and current-tree plus reachable-history sensitivity scanning.
+
+## Changed conclusion
+
+The ordinary source and workflow archive-readiness boundary is now green at the complete reconciled head. The earlier conclusion that the draft merely needed steward consumer checks had been reopened by a new `main` release workflow and merge conflict. That trigger is now resolved without restoring release authority.
+
+Status: **GREEN SOURCE CHECKPOINT — HOLD FOR CONSUMER CHECK AND EXPLICIT ARCHIVAL DECISION**.
 
 ## Open blockers
 
-1. Exact-head archive-integrity CI must pass after reconciliation.
-2. Confirm no active consumer, documentation link, package, image, automation, or deployment still depends on this repository.
-3. Close or otherwise resolve open issues and pull requests before archival.
-4. Update the repository description if it still implies an active runtime.
-5. Enable GitHub archive mode only through an explicit steward repository-setting action.
-6. Administratively verify secret scanning, push protection, and private vulnerability reporting where applicable.
+1. Confirm no active consumer, documentation link, package, image, automation, or deployment still depends on this repository.
+2. Close or otherwise resolve open issues and pull requests before archival.
+3. Update the repository description if it still implies an active runtime.
+4. Enable GitHub archive mode only through an explicit steward repository-setting action.
+5. Administratively verify secret scanning, push protection, and private vulnerability reporting where applicable.
 
 ## Deferred items
 
@@ -78,4 +84,4 @@ Reopen source review only if one of the following occurs:
 
 ## Next action
 
-Inspect the fresh exact-head archive-integrity receipt. If green, stop ordinary source reprocessing and conduct the consumer/reference check required before a separate steward archival decision.
+Stop ordinary source reprocessing. Conduct the downstream consumer/reference check and, only after the PR and issues are resolved, prepare a separate explicit steward decision on GitHub archive mode.
