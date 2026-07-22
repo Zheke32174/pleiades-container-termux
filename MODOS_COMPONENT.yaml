@@ -4,36 +4,27 @@ metadata:
   name: pleiades-termux-container-adapter
   repository: Zheke32174/pleiades-container-termux
   visibility: public
-  lifecycle: experimental
+  lifecycle: retired
   defaultBranch: main
 spec:
   roles:
-    - android-container-adapter
-    - rootless-workload-substrate
-    - intermittent-edge-runtime
-  authority: local-enforcement
+    - deprecation-redirect
+    - historical-lineage-reference
+  authority: none
   inputs:
-    - signed-workload-specs
-    - container-images
-    - cached-local-policy
+    - legacy-container-command-invocations
   outputs:
-    - workload-status
-    - buffered-domain-events
-    - runtime-observations
-  capabilitiesProvided:
-    - workload.container.termux
-    - node.android.container
-    - event.buffer.mobile
-  capabilitiesRequired:
-    - host.android.local
-    - filesystem.container.scoped
-    - policy.local.read
-    - audit.append
+    - fail-closed-deprecation-notice
+    - supported-successor-links
+  capabilitiesProvided: []
+  capabilitiesRequired: []
   dataClasses:
     - public
-    - private
-    - untrusted
-    - evidence
-  failurePolicy: degrade-local
-  promotionPolicy: signed-pr
-  notes: The adapter provides bounded container execution on Android and cannot claim fresh global authority during partition.
+  failurePolicy: hard-fail
+  promotionPolicy: never-promote
+  notes: >-
+    Ordinary Termux cannot provide the systemd host, cgroup, mount, namespace,
+    and systemd-nspawn authority required by the Linux container substrate.
+    Every compatibility command exits 64 and performs no lifecycle action.
+    This repository exists only to preserve lineage and redirect consumers to
+    pleiades-termux or Linux-host pleiades-container before archival.

@@ -1,37 +1,59 @@
-# Pleiades Container Termux — Deprecated
+# Pleiades Container Termux — Retired
 
-This repository is a historical compatibility experiment and an archive candidate.
+> **Status:** fail-closed migration stub and archive candidate. This repository does not provide a container or downloadable runtime.
 
-Ordinary Termux does not provide the systemd host, namespace authority, cgroup control, mount authority, or `systemd-nspawn` runtime required by [`pleiades-container`](https://github.com/Zheke32174/pleiades-container). Replacing those facilities with successful no-op stubs does not create isolation; it only conceals that the requested operation never occurred.
+Ordinary Termux does not provide the systemd host, cgroup, mount, namespace, or `systemd-nspawn` authority required by the maintained Linux [`pleiades-container`](https://github.com/Zheke32174/pleiades-container) substrate.
 
-For that reason, the bootstrap, start, stop, and shell commands now fail closed with exit code `64`.
+Earlier compatibility code attempted to imitate unavailable facilities. Successful no-op stubs concealed failure without creating isolation. The current bootstrap, start, stop, and shell entry points therefore print migration guidance and exit with status `64` without performing lifecycle work.
+
+## Do not install or release this repository
+
+There is no supported package, image, APK, container root, release artifact, or runtime service to download. New releases are disabled. Historical tags or release pages are lineage only and must not be interpreted as supported software.
+
+Do not copy files from `systemd/` into Termux. Their presence is historical provenance and does not imply that systemd or nspawn is available on Android.
 
 ## Use instead
 
-| Need | Repository / layer |
+| Need | Supported repository / layer |
 |---|---|
-| Android observation queue and operator client | [`pleiades-termux`](https://github.com/Zheke32174/pleiades-termux) |
-| Hardened Gentoo `systemd-nspawn` substrate | [`pleiades-container`](https://github.com/Zheke32174/pleiades-container) on a Linux host |
-| Android virtual guest or portable rooted environment | Future separately designed virtualization project |
+| Android/Termux observation queue and operator CLI | [`pleiades-termux`](https://github.com/Zheke32174/pleiades-termux) |
+| Gentoo `systemd-nspawn` substrate | [`pleiades-container`](https://github.com/Zheke32174/pleiades-container) on a suitable Linux host |
+| Android virtual guest or portable rooted environment | A future separately designed virtualization project |
 
-## Why the repository is not deleted immediately
+Neither successor inherits authority from this repository merely because it is linked here.
 
-The current tree preserves provenance for the earlier adaptation and prevents stale clones or links from silently resolving to an unrelated project. After migration references are removed and no active deployment depends on it, the repository should be archived through GitHub settings.
+## Current guaranteed behavior
 
-## Security statement
+These commands must all fail with exit status `64` and nonempty guidance:
 
-Nothing in this repository creates a container, a root boundary, a system service, a namespace, or a privileged Android environment.
+```text
+bootstrap-container.sh
+install-scripts/gentoo-up.sh
+install-scripts/gentoo-down.sh
+install-scripts/gentoo-shell.sh
+```
 
-The files under `systemd/` are historical references only. They must not be copied into the active Termux runtime, and their presence does not imply that systemd is available.
+Nothing in the current tree creates, starts, stops, enters, mounts, installs, or configures a container, system service, root boundary, namespace, or privileged Android environment.
+
+The MODOS declaration has lifecycle `retired`, authority `none`, no provided capabilities, hard-fail policy, and `never-promote` policy.
 
 ## Migration
 
-1. Remove this repository from any bootstrap or workspace automation.
-2. Install the current `pleiades-termux` edge-node runtime.
-3. Move Linux-host container lifecycle work to `pleiades-container`.
-4. Remove aliases or symlinks for `gentoo-up`, `gentoo-down`, and `gentoo-shell` on Android.
-5. Archive this repository after verifying no consumers remain.
+1. Remove this repository from bootstrap, workspace, package, and deployment automation.
+2. Remove Android aliases or symlinks for the retired Gentoo lifecycle commands.
+3. Install the reviewed `pleiades-termux` edge runtime for Android observation work.
+4. Move nspawn lifecycle work to `pleiades-container` on a Linux host.
+5. Confirm no active consumer remains.
+6. Complete the checklist in [ARCHIVE_NOTICE.md](ARCHIVE_NOTICE.md), then enable GitHub archive mode only with explicit steward approval.
 
-## License
+## Why it remains public temporarily
+
+The repository preserves provenance, catches stale links and clones, and provides an unambiguous migration destination. Deleting or repurposing it immediately could make old automation resolve to unrelated behavior.
+
+Public CI verifies that every executable fails closed, no success stub reappears, the component declaration remains retired, release automation stays absent, and the current tree plus reachable Git history pass the configured sensitivity scan.
+
+## Security and license
+
+Security posture and supported-report scope: [SECURITY.md](SECURITY.md)
 
 MIT — see [LICENSE](LICENSE).
