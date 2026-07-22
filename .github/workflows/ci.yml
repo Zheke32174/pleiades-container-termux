@@ -15,12 +15,13 @@ concurrency:
 
 jobs:
   verify-deprecation:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           fetch-depth: 0
+          persist-credentials: false
           show-progress: false
 
       - name: Compile sensitivity scanner
@@ -56,6 +57,7 @@ jobs:
           test -f LICENSE
           test -f SECURITY.md
           test -f ARCHIVE_NOTICE.md
+          test -f RELEASE_READINESS_CHECKPOINT.md
           test ! -e .github/workflows/release.yml
 
       - name: Scan public tree and reachable Git history
